@@ -56,7 +56,7 @@ void array_preorder(int root) {
 	if (Tree[root] != NULL) {
 		printf("%d ", Tree[root]);
 		array_preorder(root * 2);
-		array_preorder(Tree[root * 2 + 1]);
+		array_preorder(root * 2 + 1);
 	}
 }
 
@@ -65,7 +65,7 @@ void array_inorder(int root) {
 	if (Tree[root] != NULL) {
 		array_inorder(root * 2);
 		printf("%d ", Tree[root]);
-		array_inorder(Tree[root * 2 + 1]);
+		array_inorder(root * 2 + 1);
 	}
 }
 
@@ -73,7 +73,7 @@ void array_inorder(int root) {
 void array_postorder(int root) {
 	if (Tree[root] != NULL) {
 		array_postorder(root * 2);
-		array_postorder(Tree[root * 2 + 1]);
+		array_postorder(root * 2 + 1);
 		printf("%d ", Tree[root]);
 	}
 }
