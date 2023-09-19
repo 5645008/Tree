@@ -1,117 +1,74 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
-//링크 표현법
-typedef struct TreeNode {
+
+//수식트리
+typedef struct treeNode {
 	int data;
-	struct TreeNode* left, * right;
-};
+	struct treeNode* left, * right;
+}TreeNode;
 
-TreeNode n1 = { 4,NULL, NULL };
-TreeNode n2 = { 5,NULL, NULL };
-TreeNode n3 = { 10,NULL, NULL };
-TreeNode n4 = { 11,NULL, NULL };
-TreeNode n5 = { 3,&n1, &n2 };
-TreeNode n6 = { 6,NULL, NULL };
-TreeNode n7 = { 8,NULL, NULL };
-TreeNode n8 = { 9,&n3, &n4 };
-TreeNode n9 = { 2,&n5, &n6 };
-TreeNode n10 = { 7,&n7, &n8 };
-TreeNode n11 = { 1,&n9, &n10 };
-TreeNode* root = &n11;
-
-//링크-전위순회
-void link_preorder(TreeNode* root) {
-	if (root != NULL) {
-		printf("%d ", root->data);
-		link_preorder(root->left);
-		link_preorder(root->right);
-	}
-}
-
-//링크-중위순회
-void link_inorder(TreeNode* root) {
-	if (root != NULL) {
-		link_inorder(root->left);
-		printf("%d ", root->data);
-		link_inorder(root->right);
-	}
-}
-
-//링크-후위순회
-void link_postorder(TreeNode* root) {
-	if (root != NULL) {
-		link_postorder(root->left);
-		link_postorder(root->right);
-		printf("%d ", root->data);
-	}
-}
-
-//배열 표현법
-int Tree[16] = { NULL, 1, 2, 7, 3, 6, 8, 9, 4, 5, NULL, NULL, NULL, NULL, 10, 11 };
-int array_root = Tree[1];
-
-//배열-전위순회
-void array_preorder(int root) {
-	if (Tree[root] != NULL) {
-		printf("%d ", Tree[root]);
-		array_preorder(root * 2);
-		array_preorder(root * 2 + 1);
-	}
-}
-
-//배열-중위순회
-void array_inorder(int root) {
-	if (Tree[root] != NULL) {
-		array_inorder(root * 2);
-		printf("%d ", Tree[root]);
-		array_inorder(root * 2 + 1);
-	}
-}
-
-//배열-후위순회
-void array_postorder(int root) {
-	if (Tree[root] != NULL) {
-		array_postorder(root * 2);
-		array_postorder(root * 2 + 1);
-		printf("%d ", Tree[root]);
-	}
-}
+TreeNode n1 = { 2,NULL, NULL };
+TreeNode n2 = { 3,NULL, NULL };
+TreeNode n3 = { 4,NULL, NULL };
+TreeNode n4 = { 5,NULL, NULL };
+TreeNode n5 = { (int)'+',&n1, &n2};
+TreeNode n6 = { (int)'*',&n3, &n4 };
+TreeNode n7 = { 6,NULL, NULL };
+TreeNode n8 = { 7,NULL, NULL };
+TreeNode n9 = { (int)'+',&n5, &n6 };
+TreeNode n10 = { (int)'/',&n7, &n8 };
+TreeNode n11 = { (int)'-',&n9, &n10 };
+TreeNode n12 = { 9, NULL, NULL };
+TreeNode n13 = { (int)'+',&n11, &n12 };
+TreeNode* root = &n13;
 
 
+//노드 수
+int node = 0;
 
 
-
-void main()
+//수식 계산 함수
+float evaluate(TreeNode* root)
 {
-	//링크 표현법
-	printf("<Linked Tree>\n");
-	printf("1. 전위 순회\n");
-	link_preorder(root);
-	printf("\n\n");
+	
+	if (root == NULL)
+		return 0;
 
-	printf("2. 중위 순회\n");
-	link_inorder(root);
-	printf("\n\n");
+	if (root->left == NULL && root->right == NULL) {
+		node++;
+		return root->data;
+	}
+	else {
+		float op1 = evaluate(root->left);
+		float op2 = evaluate(root->right);
 
-	printf("3. 후위 순회\n");
-	link_postorder(root);
-	printf("\n\n");
+		switch (root->data) {
+		case '+':
+			node++;
+			printf("%0.2f + %0.2f = %0.2f\n", op1, op2, op1 + op2);
+			return op1 + op2;
+		case '-':
+			node++;
+			printf("%0.2f - %0.2f = %0.2f\n", op1, op2, op1 - op2);
+			return op1 - op2;
+		case '*':
+			node++;
+			printf("%0.2f * %0.2f = %0.2f\n", op1, op2, op1 * op2);
+			return op1 * op2;
+		case '/':
+			node++;
+			printf("%0.2f / %0.2f = %0.2f\n", op1, op2, op1 / op2);
+			return op1 / op2;
+		}
 
-	//배열 표현법
-	printf("<Array Tree>\n");
-	printf("1. 전위 순회\n");
-	array_preorder(array_root);
-	printf("\n\n");
+	}
+	return 0;
+}
 
-	printf("2. 중위 순회\n");
-	array_inorder(array_root);
-	printf("\n\n");
-
-	printf("3. 후위 순회\n");
-	array_postorder(array_root);
-	printf("\n\n");
-
-
-
+//메인
+int main(void)
+{
+	evaluate(root);
+	printf("총 노드의 수는 %d개 입니다.", node);
+	return 0;
 }
