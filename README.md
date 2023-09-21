@@ -1,2 +1,2 @@
 # Tree
-![](./image.jpg)
+![](./image.PNG)
