@@ -51,9 +51,10 @@ void thread_inorder(TreeNode* t)
 //부모노드를 찾는 함수
 TreeNode* parent(TreeNode* child) {
 	TreeNode* q = child;
-	if (q->is_thread == 1)
-		q = q->right;
-	if (q->left == child || q->right == child)
+	q = q->right;
+	while (q->left != child && q->right != child) {
+		q = q->left;
+	}
 		return q;
 }
 
@@ -71,8 +72,8 @@ void main()
 	thread_inorder(root);
 	printf("\n\n");
 	
-	TreeNode* a = parent(&n4);
-	TreeNode* b = parent(&n5);
+	TreeNode* a = parent(&n1);
+	TreeNode* b = parent(&n2);
 	TreeNode* c = parent(&n6);
 	printf("2. Node 4의 부모: %d \n", a->data);
 	printf("3. Node 5의 부모: %d \n", b->data);
