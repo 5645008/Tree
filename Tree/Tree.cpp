@@ -1,117 +1,264 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-//링크 표현법
+//트리 설정
 typedef struct TreeNode {
-	int data;
+	int key;
 	struct TreeNode* left, * right;
-};
+}TreeNode;
 
-TreeNode n1 = { 4,NULL, NULL };
-TreeNode n2 = { 5,NULL, NULL };
-TreeNode n3 = { 10,NULL, NULL };
-TreeNode n4 = { 11,NULL, NULL };
-TreeNode n5 = { 3,&n1, &n2 };
-TreeNode n6 = { 6,NULL, NULL };
-TreeNode n7 = { 8,NULL, NULL };
-TreeNode n8 = { 9,&n3, &n4 };
-TreeNode n9 = { 2,&n5, &n6 };
-TreeNode n10 = { 7,&n7, &n8 };
-TreeNode n11 = { 1,&n9, &n10 };
-TreeNode* root = &n11;
+TreeNode n1 = { 42,NULL, NULL };
+TreeNode n2 = { 62,NULL, NULL };
+TreeNode n3 = { 64,NULL, NULL };
+TreeNode n4 = { 25,NULL, NULL };
+TreeNode n5 = { 46,&n1, NULL };
+TreeNode n6 = { 55,NULL, NULL };
+TreeNode n7 = { 63,&n2, &n3 };
+TreeNode n8 = { 70,NULL, NULL };
+TreeNode n9 = { 16,NULL, &n4 };
+TreeNode n10 = { 53,&n5, &n6 };
+TreeNode n11 = { 65,&n7, &n8 };
+TreeNode n12 = { 41,&n9, &n10 };
+TreeNode n13 = { 74,&n11, NULL };
+TreeNode n14 = { 60,&n12, &n13 };
+TreeNode* root = &n14;
 
-//링크-전위순회
-void link_preorder(TreeNode* root) {
-	if (root != NULL) {
-		printf("%d ", root->data);
-		link_preorder(root->left);
-		link_preorder(root->right);
-	}
-}
+//방문한 노드를 셀 정수
+int visit = 0;
 
-//링크-중위순회
+//중위순회
 void link_inorder(TreeNode* root) {
 	if (root != NULL) {
+		visit++;
 		link_inorder(root->left);
-		printf("%d ", root->data);
+		printf("%d ", root->key);
 		link_inorder(root->right);
 	}
 }
-
-//링크-후위순회
-void link_postorder(TreeNode* root) {
-	if (root != NULL) {
-		link_postorder(root->left);
-		link_postorder(root->right);
-		printf("%d ", root->data);
-	}
-}
-
-//배열 표현법
-int Tree[16] = { NULL, 1, 2, 7, 3, 6, 8, 9, 4, 5, NULL, NULL, NULL, NULL, 10, 11 };
-int array_root = Tree[1];
-
-//배열-전위순회
-void array_preorder(int root) {
-	if (Tree[root] != NULL) {
-		printf("%d ", Tree[root]);
-		array_preorder(root * 2);
-		array_preorder(root * 2 + 1);
-	}
-}
-
-//배열-중위순회
-void array_inorder(int root) {
-	if (Tree[root] != NULL) {
-		array_inorder(root * 2);
-		printf("%d ", Tree[root]);
-		array_inorder(root * 2 + 1);
-	}
-}
-
-//배열-후위순회
-void array_postorder(int root) {
-	if (Tree[root] != NULL) {
-		array_postorder(root * 2);
-		array_postorder(root * 2 + 1);
-		printf("%d ", Tree[root]);
-	}
-}
-
-
-
-
-
-void main()
+//탐색(반복)
+TreeNode* search(TreeNode* node, int key)
 {
-	//링크 표현법
-	printf("<Linked Tree>\n");
-	printf("1. 전위 순회\n");
-	link_preorder(root);
-	printf("\n\n");
-
-	printf("2. 중위 순회\n");
-	link_inorder(root);
-	printf("\n\n");
-
-	printf("3. 후위 순회\n");
-	link_postorder(root);
-	printf("\n\n");
-
-	//배열 표현법
-	printf("<Array Tree>\n");
-	printf("1. 전위 순회\n");
-	array_preorder(array_root);
-	printf("\n\n");
-
-	printf("2. 중위 순회\n");
-	array_inorder(array_root);
-	printf("\n\n");
-
-	printf("3. 후위 순회\n");
-	array_postorder(array_root);
-	printf("\n\n");
+	while (node != NULL) {
+		if (key == node->key) {
+			visit++;
+			return node;
+		}
+		else if (key < node->key) {
+			visit++;
+			node = node->left;
+		}
+		else {
+			visit++;
+			node = node->right;
+		}
+	}
+	return NULL;
+}
 
 
+TreeNode* new_node(int item)
+{
+	TreeNode* temp = (TreeNode*)malloc(sizeof(TreeNode));
+	temp->key = item;
+	temp->left = temp->right = NULL;
+	return temp;
+}
 
+//삽입(재귀)
+TreeNode* insert_node(TreeNode* node, int key)
+{
+	if (node == NULL) {
+		visit++;
+		return new_node(key);
+	}
+	if (key < node->key) {
+		visit++;
+		node->left = insert_node(node->left, key);
+}
+	else if (key > node->key) {
+		visit++;
+		node->right = insert_node(node->right, key);
+	}
+	return node;
+}
+
+//삽입(반복)
+TreeNode* Insert_nodes(TreeNode* node, int key)
+{
+	if (node == NULL) {
+		visit++;
+		return new_node(key);
+	}
+	while (node != NULL) {
+		if (key < node->key) {
+			visit++;
+			node = node->left;
+		}
+		else {
+			visit++;
+			node = node->right;
+		}
+	}
+	return node;
+}
+
+
+TreeNode* min_value_node(TreeNode* node)
+{
+	TreeNode* current = node;
+	while (current->left != NULL)
+		current = current->left;
+	return current;
+}
+//삭제(재귀)
+TreeNode* delete_node(TreeNode* root, int key)
+{
+	if (root == NULL) {
+		visit++;
+		return root;
+	}
+	if (key < root->key) {
+		visit++;
+		root->left = delete_node(root->left, key);
+	}
+	if (key > root->key) {
+		visit++;
+		root->right = delete_node(root->right, key);
+	}
+	else {
+		if (root->left == NULL) {
+			TreeNode* temp = root->right;
+			free(root);
+			visit++;
+			return temp;
+		}
+		else if (root->right == NULL) {
+			TreeNode* temp = root->left;
+			free(root);
+			visit++;
+			return temp;
+		}
+		TreeNode* temp = min_value_node(root->right);
+		visit++;
+		root->key = temp->key;
+		root->right = delete_node(root->right, temp->key);
+	}
+	return root;
+}
+
+//삭제(반복)
+TreeNode* Delete_nodes(TreeNode* root, int key)
+{
+	if (root == NULL) {
+		visit++;
+		return root;
+	}
+	while (root != NULL) {
+		if (key < root->key) {
+			visit++;
+			root = root->left;
+		}
+		else {
+			visit++;
+			root = root->right;
+		}
+	}
+	if(root->key == key)
+		if (root->left == NULL) {
+			TreeNode* temp = root->right;
+			free(root);
+			visit++;
+			return temp;
+		}
+		else if (root->right == NULL) {
+			TreeNode* temp = root->left;
+			free(root);
+			visit++;
+			return temp;
+		}
+		TreeNode* temp = min_value_node(root->right);
+		visit++;
+		root->key = temp->key;
+		root->right = delete_node(root->right, temp->key);
+	return root;
+}
+
+
+
+int main(void)
+{
+	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
+	printf("| s     : 검색               |\n");
+	printf("| i     : 노드 추가          |\n");
+	printf("| d     : 노드 삭제          |\n");
+	printf("| t     : 중위 순회          |\n");
+	printf("| I     : 노드 추가(반복)    |\n");
+	printf("| D     : 노드 삭제(반복)    |\n");
+	printf("| c     : 종료               |\n");
+	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
+
+	char command;
+	do {
+		int number = 0;
+		int result = 0;
+		printf("메뉴 입력: ");
+		command = getchar();
+		
+		switch (command) {
+		case 's':
+		{
+			printf("겁색할 값 입력:");
+			scanf("%d", &number);
+			search(root, number);
+			printf("검색 성공: %d\n", number);
+			printf("방문한 노드의 수: %d\n", visit);
+			link_inorder(root);
+			printf("\n");
+			visit = 0;
+			break;
+		}
+		case 'i':
+			printf("삽입할 값 입력:");
+			scanf("%d", &number);
+			insert_node(root, number);
+			printf("방문한 노드의 수: %d\n", visit);
+			link_inorder(root);
+			printf("\n");
+			visit = 0;
+			break;
+		case 'd':
+			printf("삭제할 값 입력:");
+			scanf("%d", &number);
+			delete_node(root, number);
+			printf("방문한 노드의 수: %d\n", visit);
+			link_inorder(root);
+			printf("\n");
+			visit = 0;
+			break;
+		case 't':
+			link_inorder(root);
+			printf("방문한 노드의 수: %d\n", visit);
+			visit = 0;
+			break;
+		case 'I':
+			printf("삽입할 값 입력:");
+			scanf("%d", &number);
+			Insert_nodes(root, number);
+			printf("방문한 노드의 수: %d\n", visit);
+			link_inorder(root);
+			printf("\n");
+			visit = 0;
+			break;
+		case 'D':
+			printf("삭제할 값 입력:");
+			scanf("%d", &number);
+			Delete_nodes(root, number);
+			printf("방문한 노드의 수: %d\n", visit);
+			link_inorder(root);
+			printf("\n");
+			visit = 0;
+			break;
+		}
+	} while (command != 'c');
+	return 0;
 }
