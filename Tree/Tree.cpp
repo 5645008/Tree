@@ -138,39 +138,64 @@ TreeNode* delete_node(TreeNode* root, int key) {
 }
 
 //삭제(반복)
-void Delete_nodes(TreeNode* root, int key)
-{
-	if (root == NULL) {
-		visit++;
-		return;
-	}
-	while (root->key == key) {
-		if (key < root->key) {
-			visit++;
-			root = root->left;
+TreeNode* deleteNode(TreeNode* root, int key) {
+	TreeNode* current = root;
+	TreeNode* parent = NULL;
+
+	while (current != NULL && current->key != key) {
+		parent = current;
+
+		if (key < current->key) {
+			current = current->left;
 		}
 		else {
-			visit++;
-			root = root->right;
+			current = current->right;
 		}
 	}
-	if (root->left == NULL) {
-		TreeNode* temp = root->right;
-		free(root);
-		visit++;
 
+	if (current == NULL) {
+		return root;
 	}
-	else if (root->right == NULL) {
-		TreeNode* temp = root->left;
-		free(root);
-		visit++;
 
+	if (current->left == NULL || current->right == NULL) {
+		TreeNode* child = (current->left != NULL) ? current->left : current->right;
+
+		if (parent == NULL) {
+			free(current);
+			return child;
+		}
+		else {
+			if (current == parent->left) {
+				parent->left = child;
+			}
+			else {
+				parent->right = child;
+			}
+
+			free(current);
+			return root;
+		}
 	}
-	TreeNode* temp = min_value_node(root->right);
-	root->key = temp->key;
-	root->right = delete_node(root->right, temp->key);
-	visit++;
 
+	TreeNode* successor = current->right;
+	TreeNode* successorParent = current;
+
+	while (successor->left != NULL) {
+		successorParent = successor;
+		successor = successor->left;
+	}
+
+	current->key = successor->key;
+
+	if (successor == successorParent->left) {
+		successorParent->left = successor->right;
+	}
+	else {
+		successorParent->right = successor->right;
+	}
+
+	free(successor);
+	return root;
 }
 
 
@@ -261,7 +286,7 @@ int main(void)
 		case 'D':
 			printf("삭제할 값 입력:");
 			scanf_s("%d", &number);
-			Delete_nodes(root, number);
+			deleteNode(root, number);
 			printf("방문한 노드의 수: %d\n", visit);
 			link_inorder(root);
 			printf("\n");
