@@ -198,10 +198,17 @@ TreeNode* deleteNode(TreeNode* root, int key) {
 	return root;
 }
 
+//입력시 생기는 엔터 받아주기
+void Clear(void) {
+	while (getchar() != '\n');
+}
+
+
 
 
 int main(void)
 {
+//트리 정의
 	TreeNode* root = NULL;
 	root = insert_node(root, 60);
 	root = insert_node(root, 41);
@@ -219,7 +226,7 @@ int main(void)
 	root = insert_node(root, 64);
 
 
-
+//메뉴
 	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
 	printf("| s     : 검색               |\n");
 	printf("| i     : 노드 추가          |\n");
@@ -230,18 +237,19 @@ int main(void)
 	printf("| c     : 종료               |\n");
 	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
 
+
 	char command;
 	do {
 		int number = 0;
 		int result = 0;
 		printf("메뉴 입력: ");
 		command = getchar();
-		
 		switch (command) {
 		case 's':
 		{
 			printf("겁색할 값 입력:");
 			scanf_s("%d", &number);
+			Clear();
 			search(root, number);
 			printf("검색 성공: %d\n", number);
 			printf("방문한 노드의 수: %d\n", visit);
@@ -253,43 +261,49 @@ int main(void)
 		case 'i':
 			printf("삽입할 값 입력:");
 			scanf_s("%d", &number);
+			Clear();
 			root = insert_node(root, number);
 			printf("방문한 노드의 수: %d\n", visit);
 			link_inorder(root);
-			printf("\n");
+			printf("\n\n");
 			visit = 0;
 			break;
 		case 'd':
 			printf("삭제할 값 입력:");
 			scanf_s("%d", &number);
+			Clear();
 			root = delete_node(root, number);
 			printf("방문한 노드의 수: %d\n", visit);
 			link_inorder(root);
-			printf("\n");
+			printf("\n\n");
 			visit = 0;
 			break;
 		case 't':
 			link_inorder(root);
+			Clear();
 			printf("\n");
 			printf("방문한 노드의 수: %d\n", visit);
+			printf("\n");
 			visit = 0;
 			break;
 		case 'I':
 			printf("삽입할 값 입력:");
 			scanf_s("%d", &number);
+			Clear();
 			Insert_nodes(root, number);
 			printf("방문한 노드의 수: %d\n", visit);
 			link_inorder(root);
-			printf("\n");
+			printf("\n\n");
 			visit = 0;
 			break;
 		case 'D':
 			printf("삭제할 값 입력:");
 			scanf_s("%d", &number);
+			Clear();
 			deleteNode(root, number);
 			printf("방문한 노드의 수: %d\n", visit);
 			link_inorder(root);
-			printf("\n");
+			printf("\n\n");
 			visit = 0;
 			break;
 		}
